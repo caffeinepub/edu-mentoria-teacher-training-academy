@@ -1,0 +1,287 @@
+import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
+
+const navLinks = [
+  { label: "About", href: "about" },
+  { label: "Courses", href: "courses" },
+  { label: "Syllabus", href: "syllabus" },
+  { label: "Internship", href: "internship" },
+  { label: "Gallery", href: "gallery" },
+];
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  return (
+    <>
+      <nav
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          transition: "all 0.4s ease",
+          background: scrolled ? "rgba(13,25,69,0.88)" : "rgba(13,25,69,1)",
+          backdropFilter: scrolled ? "blur(24px)" : "none",
+          borderBottom: scrolled ? "1px solid rgba(0,187,204,0.12)" : "none",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1280,
+            margin: "0 auto",
+            padding: "0 32px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: 72,
+          }}
+        >
+          {/* LEFT: Logo */}
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Edu Mentoria Home"
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          >
+            {!logoError ? (
+              <img
+                src="/assets/uploads/edu_mentoria_logo-019d32d2-c508-74be-b0a0-80f228ef99a2-2.png"
+                alt="Edu Mentoria Logo"
+                height={52}
+                style={{
+                  height: 52,
+                  objectFit: "contain",
+                  mixBlendMode: "screen",
+                  background: "transparent",
+                }}
+                onError={() => setLogoError(true)}
+                loading="lazy"
+              />
+            ) : (
+              <div
+                style={{
+                  height: 52,
+                  width: 80,
+                  background: "#C8DC00",
+                  borderRadius: 6,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: 800,
+                  fontSize: 16,
+                  color: "#0d1945",
+                  letterSpacing: 1,
+                }}
+              >
+                EM
+              </div>
+            )}
+          </button>
+
+          {/* CENTER: Nav links desktop */}
+          <div
+            className="hidden md:flex"
+            style={{ gap: 36, alignItems: "center" }}
+          >
+            {navLinks.map((link) => (
+              <NavLink key={link.href} link={link} />
+            ))}
+          </div>
+
+          {/* RIGHT: Enrol Now + Hamburger */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <motion.button
+              type="button"
+              onClick={() => scrollTo("contact")}
+              whileHover={{
+                scale: 1.04,
+                boxShadow: "0 0 0 4px rgba(200,220,0,0.25)",
+              }}
+              whileTap={{ scale: 0.98 }}
+              style={{
+                background: "#C8DC00",
+                color: "#0d1945",
+                borderRadius: 999,
+                padding: "10px 24px",
+                fontSize: 11,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: "1.5px",
+                fontFamily: "Montserrat, sans-serif",
+                border: "none",
+                cursor: "pointer",
+              }}
+              className="hidden md:inline-block"
+              data-ocid="navbar.enrol_button"
+            >
+              Enrol Now
+            </motion.button>
+
+            <button
+              type="button"
+              className="md:hidden"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle mobile menu"
+              style={{
+                color: "white",
+                background: "transparent",
+                border: "none",
+                padding: 8,
+                cursor: "pointer",
+              }}
+              data-ocid="navbar.hamburger_button"
+            >
+              <motion.div animate={{ rotate: mobileOpen ? 90 : 0 }}>
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              </motion.div>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ y: "-100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-100%", opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "#0d1945",
+              zIndex: 99,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 40,
+            }}
+          >
+            {navLinks.map((link, i) => (
+              <motion.button
+                type="button"
+                key={link.href}
+                onClick={() => {
+                  setMobileOpen(false);
+                  scrollTo(link.href);
+                }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: i * 0.08,
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  color: "white",
+                  fontSize: 28,
+                  fontWeight: 700,
+                  fontFamily: "Montserrat, sans-serif",
+                  textTransform: "uppercase",
+                  letterSpacing: "3px",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                data-ocid={`navbar.${link.label.toLowerCase()}_link`}
+              >
+                {link.label}
+              </motion.button>
+            ))}
+            <motion.button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                scrollTo("contact");
+              }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, duration: 0.4 }}
+              style={{
+                background: "#C8DC00",
+                color: "#0d1945",
+                borderRadius: 999,
+                padding: "14px 36px",
+                fontSize: 14,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: "2px",
+                border: "none",
+                cursor: "pointer",
+              }}
+              data-ocid="navbar.mobile_enrol_button"
+            >
+              Enrol Now
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function NavLink({ link }: { link: { label: string; href: string } }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => scrollTo(link.href)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative",
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: "2px",
+        textTransform: "uppercase",
+        color: hovered ? "white" : "rgba(255,255,255,0.70)",
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        paddingBottom: 6,
+        fontFamily: "Montserrat, sans-serif",
+        transition: "color 0.2s",
+      }}
+      data-ocid={`navbar.${link.label.toLowerCase()}_link`}
+    >
+      {link.label}
+      <span
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: hovered ? 4 : 0,
+          height: 4,
+          borderRadius: "50%",
+          background: "#C8DC00",
+          transition: "width 0.2s",
+          display: "block",
+        }}
+      />
+    </button>
+  );
+}
