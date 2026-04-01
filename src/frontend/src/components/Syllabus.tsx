@@ -68,6 +68,7 @@ export default function Syllabus() {
   return (
     <section
       id="syllabus"
+      className="syllabus-section"
       style={{
         background: "#F2F5FF",
         position: "relative",
@@ -75,25 +76,8 @@ export default function Syllabus() {
         padding: "100px 0",
       }}
     >
-      {/* Ghost number */}
       <div
-        style={{
-          position: "absolute",
-          top: -40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(26,43,140,0.04)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        03
-      </div>
-
-      <div
+        className="syllabus-inner"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -112,9 +96,9 @@ export default function Syllabus() {
         >
           <div
             style={{
-              fontSize: 9,
+              fontSize: 14,
               fontWeight: 700,
-              letterSpacing: "3px",
+              letterSpacing: "2px",
               textTransform: "uppercase",
               color: "#1A2B8C",
               marginBottom: 16,
@@ -149,8 +133,35 @@ export default function Syllabus() {
           </div>
         </motion.div>
 
+        {/* Mobile tab strip — only visible on mobile */}
+        <div className="syllabus-mobile-tabs block md:hidden">
+          {subjects.map((subject, i) => (
+            <button
+              type="button"
+              key={subject.num}
+              onClick={() => handleSidebarClick(i)}
+              className={`syllabus-mobile-tab-btn${activeIndex === i ? " active" : ""}`}
+              data-ocid={`syllabus.tab.${i + 1}`}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: activeIndex === i ? "#0d1945" : "#00BBCC",
+                }}
+              >
+                {subject.num}
+              </span>
+              {subject.label.split(" ").slice(0, 3).join(" ")}
+            </button>
+          ))}
+        </div>
+
         {/* 2-col layout */}
-        <div style={{ display: "flex", gap: 40, alignItems: "flex-start" }}>
+        <div
+          className="syllabus-layout"
+          style={{ display: "flex", gap: 40, alignItems: "flex-start" }}
+        >
           {/* Sidebar */}
           <div
             style={{
@@ -175,22 +186,19 @@ export default function Syllabus() {
                   gap: 2,
                   padding: "12px 20px",
                   background:
-                    activeIndex === i ? "rgba(26,43,140,0.04)" : "transparent",
+                    activeIndex === i ? "rgba(26,43,140,0.12)" : "transparent",
+                  border: "none",
                   borderLeft:
                     activeIndex === i
                       ? "3px solid #C8DC00"
                       : "3px solid transparent",
-                  border: "none",
-                  borderLeftWidth: 3,
-                  borderLeftStyle: "solid",
-                  borderLeftColor:
-                    activeIndex === i ? "#C8DC00" : "transparent",
                   textAlign: "left",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   borderRadius: "0 4px 4px 0",
+                  boxShadow:
+                    activeIndex === i ? "inset 4px 0 0 #C8DC00" : "none",
                 }}
-                data-ocid={`syllabus.tab.${i + 1}`}
               >
                 <span
                   style={{
@@ -233,6 +241,7 @@ export default function Syllabus() {
                 ref={(el) => {
                   cardRefs.current[i] = el;
                 }}
+                className="syllabus-card"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
@@ -243,21 +252,26 @@ export default function Syllabus() {
                 }}
                 whileHover={{ x: 4 }}
                 style={{
-                  background: "white",
+                  background: activeIndex === i ? "#eef1ff" : "white",
                   borderRadius: 20,
                   padding: "36px 40px",
                   borderLeft: `4px solid ${
-                    subject.num === "01"
-                      ? "#C8DC00"
-                      : subject.num === "05"
-                        ? "#00BBCC"
-                        : "transparent"
+                    activeIndex === i
+                      ? "#1A2B8C"
+                      : subject.num === "01"
+                        ? "#C8DC00"
+                        : subject.num === "05"
+                          ? "#00BBCC"
+                          : "transparent"
                   }`,
                   willChange: "transform",
+                  transition: "background 0.2s, border-color 0.2s",
                 }}
                 data-ocid={`syllabus.item.${i + 1}`}
+                onClick={() => setActiveIndex(i)}
               >
                 <div
+                  className="syllabus-card-header"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -268,20 +282,22 @@ export default function Syllabus() {
                   <span
                     style={{
                       fontSize: 11,
-                      color: "#00BBCC",
+                      color: activeIndex === i ? "#1A2B8C" : "#00BBCC",
                       fontWeight: 700,
                       fontFamily: "Montserrat, sans-serif",
                       letterSpacing: "1px",
+                      flexShrink: 0,
                     }}
                   >
                     {subject.num}
                   </span>
                   <h3
+                    className="syllabus-card-title"
                     style={{
                       margin: 0,
                       fontSize: 18,
-                      fontWeight: 700,
-                      color: "#0d1945",
+                      fontWeight: activeIndex === i ? 800 : 700,
+                      color: activeIndex === i ? "#1A2B8C" : "#0d1945",
                       fontFamily: "Montserrat, sans-serif",
                     }}
                   >
@@ -289,6 +305,7 @@ export default function Syllabus() {
                   </h3>
                 </div>
                 <div
+                  className="syllabus-item-grid"
                   style={{
                     display: "grid",
                     gridTemplateColumns:
@@ -307,7 +324,7 @@ export default function Syllabus() {
                     >
                       <span
                         style={{
-                          color: "#00BBCC",
+                          color: activeIndex === i ? "#1A2B8C" : "#00BBCC",
                           flexShrink: 0,
                           marginTop: 2,
                           fontSize: 14,
@@ -318,7 +335,7 @@ export default function Syllabus() {
                       <span
                         style={{
                           fontSize: 13,
-                          color: "#3a4a7a",
+                          color: activeIndex === i ? "#1A2B8C" : "#3a4a7a",
                           fontFamily: "Montserrat, sans-serif",
                           lineHeight: 1.5,
                         }}

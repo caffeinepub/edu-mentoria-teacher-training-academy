@@ -17,6 +17,7 @@ export default function About() {
   return (
     <section
       id="about"
+      className="about-section"
       style={{
         background: "white",
         position: "relative",
@@ -24,25 +25,8 @@ export default function About() {
         padding: "100px 0",
       }}
     >
-      {/* Ghost number */}
       <div
-        style={{
-          position: "absolute",
-          top: -40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(26,43,140,0.04)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        01
-      </div>
-
-      <div
+        className="about-inner"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -53,6 +37,7 @@ export default function About() {
       >
         {/* TOP: 40/60 split */}
         <motion.div
+          className="about-split"
           variants={sectionVariants}
           initial="hidden"
           whileInView="visible"
@@ -66,7 +51,10 @@ export default function About() {
           }}
         >
           {/* Left 40% */}
-          <div style={{ flex: "0 0 38%", minWidth: 280 }}>
+          <div
+            className="about-left"
+            style={{ flex: "0 0 38%", minWidth: 280 }}
+          >
             <div
               style={{
                 display: "flex",
@@ -85,9 +73,9 @@ export default function About() {
               />
               <span
                 style={{
-                  fontSize: 9,
+                  fontSize: 13,
                   fontWeight: 700,
-                  letterSpacing: "3px",
+                  letterSpacing: "2px",
                   textTransform: "uppercase",
                   color: "#3a4a7a",
                   fontFamily: "Montserrat, sans-serif",
@@ -125,7 +113,7 @@ export default function About() {
           </div>
 
           {/* Right 60% */}
-          <div style={{ flex: 1, minWidth: 280 }}>
+          <div className="about-right" style={{ flex: 1, minWidth: 280 }}>
             <p
               style={{
                 fontSize: 18,
@@ -263,9 +251,9 @@ export default function About() {
           <div style={{ borderLeft: "4px solid #C8DC00", paddingLeft: 32 }}>
             <div
               style={{
-                fontSize: 9,
+                fontSize: 13,
                 fontWeight: 700,
-                letterSpacing: "3px",
+                letterSpacing: "2px",
                 textTransform: "uppercase",
                 color: "#C8DC00",
                 marginBottom: 12,
@@ -275,6 +263,7 @@ export default function About() {
               OUR MISSION
             </div>
             <h3
+              className="mission-vision-heading"
               style={{
                 fontSize: 32,
                 fontWeight: 800,
@@ -316,9 +305,9 @@ export default function About() {
           <div style={{ borderLeft: "4px solid #00BBCC", paddingLeft: 32 }}>
             <div
               style={{
-                fontSize: 9,
+                fontSize: 13,
                 fontWeight: 700,
-                letterSpacing: "3px",
+                letterSpacing: "2px",
                 textTransform: "uppercase",
                 color: "#00BBCC",
                 marginBottom: 12,
@@ -328,6 +317,7 @@ export default function About() {
               OUR VISION
             </div>
             <h3
+              className="mission-vision-heading"
               style={{
                 fontSize: 32,
                 fontWeight: 800,

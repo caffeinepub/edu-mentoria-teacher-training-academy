@@ -27,16 +27,6 @@ const ALL_IMAGES = [
 
 const GRID_IMAGES = ALL_IMAGES.slice(0, 6);
 
-const mosaicStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gridTemplateAreas: `
-    "img0 img1 img2"
-    "img3 img4 img5"
-  `,
-  gap: 12,
-};
-
 export default function Gallery() {
   const [slideshow, setSlideshow] = useState<{ open: boolean; index: number }>({
     open: false,
@@ -83,24 +73,6 @@ export default function Gallery() {
         padding: "100px 0",
       }}
     >
-      {/* Ghost number */}
-      <div
-        style={{
-          position: "absolute",
-          top: -40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(26,43,140,0.04)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        05
-      </div>
-
       <div
         style={{
           maxWidth: 1280,
@@ -123,7 +95,7 @@ export default function Gallery() {
         >
           <div
             style={{
-              fontSize: 9,
+              fontSize: 11,
               fontWeight: 700,
               letterSpacing: "3px",
               textTransform: "uppercase",
@@ -160,13 +132,17 @@ export default function Gallery() {
           </div>
         </motion.div>
 
-        {/* Mosaic grid — 6 real images */}
+        {/* Uniform grid */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.7 }}
-          style={mosaicStyle}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 12,
+          }}
         >
           {GRID_IMAGES.map((src, i) => (
             <motion.div
@@ -175,8 +151,7 @@ export default function Gallery() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               onClick={() => openSlideshow(i)}
               style={{
-                gridArea: `img${i}`,
-                height: i === 0 || i === 3 ? 320 : 260,
+                height: 280,
                 borderRadius: 10,
                 overflow: "hidden",
                 cursor: "pointer",
@@ -196,7 +171,6 @@ export default function Gallery() {
                   display: "block",
                 }}
               />
-              {/* Hover overlay */}
               <motion.div
                 initial={{ opacity: 0 }}
                 whileHover={{ opacity: 1 }}
@@ -299,7 +273,6 @@ export default function Gallery() {
             }}
             data-ocid="gallery.modal"
           >
-            {/* Counter */}
             <div
               style={{
                 position: "absolute",
@@ -314,8 +287,6 @@ export default function Gallery() {
             >
               {slideshow.index + 1} / {ALL_IMAGES.length}
             </div>
-
-            {/* Close button */}
             <button
               type="button"
               onClick={closeSlideshow}
@@ -340,8 +311,6 @@ export default function Gallery() {
             >
               <X size={20} />
             </button>
-
-            {/* Prev arrow */}
             <button
               type="button"
               onClick={(e) => {
@@ -370,8 +339,6 @@ export default function Gallery() {
             >
               <ChevronLeft size={28} />
             </button>
-
-            {/* Next arrow */}
             <button
               type="button"
               onClick={(e) => {
@@ -400,8 +367,6 @@ export default function Gallery() {
             >
               <ChevronRight size={28} />
             </button>
-
-            {/* Image */}
             <AnimatePresence mode="wait">
               <motion.img
                 key={slideshow.index}

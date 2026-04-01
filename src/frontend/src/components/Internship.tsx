@@ -1,4 +1,4 @@
-import { Award, Eye, MapPin, Users } from "lucide-react";
+import { Award, Eye, Users } from "lucide-react";
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
@@ -30,6 +30,7 @@ export default function Internship() {
   return (
     <section
       id="internship"
+      className="internship-section"
       style={{
         background: "#0d1945",
         position: "relative",
@@ -37,53 +38,8 @@ export default function Internship() {
         padding: "100px 0",
       }}
     >
-      {/* Giant background 30 */}
-      <motion.div
-        animate={{ scale: [1, 1.02, 1] }}
-        transition={{
-          duration: 6,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "easeInOut",
-        }}
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          fontSize: "clamp(200px,35vw,480px)",
-          fontWeight: 900,
-          color: "rgba(200,220,0,0.04)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-          zIndex: 0,
-          willChange: "transform",
-        }}
-      >
-        30
-      </motion.div>
-
-      {/* Ghost number */}
       <div
-        style={{
-          position: "absolute",
-          top: -40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(200,220,0,0.03)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-          zIndex: 0,
-        }}
-      >
-        04
-      </div>
-
-      <div
+        className="internship-inner"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -93,6 +49,7 @@ export default function Internship() {
         }}
       >
         <div
+          className="internship-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
@@ -109,7 +66,7 @@ export default function Internship() {
           >
             <div
               style={{
-                fontSize: 9,
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "3px",
                 textTransform: "uppercase",
@@ -134,7 +91,7 @@ export default function Internship() {
             </h2>
             <h2
               style={{
-                margin: "0 0 24px",
+                margin: "0 0 8px",
                 fontSize: "clamp(36px,5vw,56px)",
                 fontWeight: 900,
                 color: "#C8DC00",
@@ -199,13 +156,13 @@ export default function Internship() {
                 fontFamily: "Montserrat, sans-serif",
               }}
             >
-              <MapPin size={14} />
               At Phonic Champs School, Chennai
             </div>
           </motion.div>
 
           {/* RIGHT: Timeline */}
           <motion.div
+            className="internship-timeline"
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.15 }}
@@ -279,6 +236,7 @@ export default function Internship() {
 
                   {/* Card */}
                   <div
+                    className="internship-milestone-card"
                     style={{
                       flex: 1,
                       background: "rgba(26,43,140,0.40)",

@@ -43,7 +43,7 @@
 }
 
 * {
-  cursor: none;
+  cursor: auto;
 }
 
 @keyframes marquee {
@@ -112,5 +112,277 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   ABOUT SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+/* Tablet: 641px – 768px */
+@media (max-width: 768px) {
+  .about-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .about-cards > *:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .mission-vision {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .mission-vision-heading {
+    font-size: 26px !important;
+  }
+
+  .about-ghost-number {
+    font-size: 160px !important;
+  }
+}
+
+/* Mobile: up to 640px */
+@media (max-width: 640px) {
+  .about-section {
+    padding: 60px 0 !important;
+  }
+
+  .about-inner {
+    padding: 0 16px !important;
+  }
+
+  .about-split {
+    flex-direction: column !important;
+    gap: 32px !important;
+    margin-bottom: 48px !important;
+  }
+
+  .about-left {
+    flex: unset !important;
+    width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .about-right {
+    flex: unset !important;
+    width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .about-cards {
+    grid-template-columns: 1fr !important;
+    margin-bottom: 48px !important;
+  }
+
+  .about-cards > *:last-child {
+    grid-column: auto !important;
+  }
+
+  .mission-vision {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .mission-vision-heading {
+    font-size: 22px !important;
+  }
+
+  .about-ghost-number {
+    font-size: 120px !important;
+    top: -20px !important;
+    right: -10px !important;
+  }
+}
+
+/* ============================================
+   HERO SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 767px) {
+  .hero-main-content {
+    flex-direction: column !important;
+    padding: 80px 20px 40px !important;
+    align-items: flex-start !important;
+  }
+
+  .hero-left-col {
+    flex: unset !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .hero-stats {
+    gap: 20px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .hero-stat-num {
+    font-size: 32px !important;
+  }
+}
+
+/* ============================================
+   COURSES SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 767px) {
+  .courses-inner {
+    padding: 0 16px !important;
+  }
+
+  .courses-cards-wrap {
+    max-width: 100% !important;
+  }
+
+  .course-card {
+    flex-direction: column !important;
+    min-height: unset !important;
+  }
+
+  .course-card-panel {
+    width: 100% !important;
+    min-height: 80px !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding: 16px 20px !important;
+    gap: 16px !important;
+  }
+
+  .course-card-num {
+    font-size: 48px !important;
+  }
+
+  .course-card-body {
+    padding: 24px 20px !important;
+  }
+
+  .course-curriculum-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================
+   SYLLABUS SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 767px) {
+  .syllabus-section {
+    padding: 60px 0 !important;
+  }
+
+  .syllabus-inner {
+    padding: 0 16px !important;
+  }
+
+  .syllabus-layout {
+    flex-direction: column !important;
+  }
+
+  .syllabus-card {
+    padding: 20px 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .syllabus-card-header {
+    flex-wrap: wrap !important;
+  }
+
+  .syllabus-card-title {
+    font-size: 15px !important;
+  }
+
+  .syllabus-item-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile tab strip for Syllabus */
+.syllabus-mobile-tabs {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.syllabus-mobile-tabs::-webkit-scrollbar {
+  display: none;
+}
+.syllabus-mobile-tab-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(26, 43, 140, 0.18);
+  background: white;
+  font-family: Montserrat, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a4a7a;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.syllabus-mobile-tab-btn.active {
+  background: #c8dc00;
+  border-color: #c8dc00;
+  color: #0d1945;
+  font-weight: 700;
+}
+
+/* ============================================
+   CONTACT SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 767px) {
+  .contact-outer {
+    padding: 40px 16px 0 !important;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .contact-cta-card {
+    padding: 36px 24px !important;
+    border-radius: 20px !important;
+  }
+
+  .contact-cta-title {
+    font-size: 24px !important;
+  }
+}
+
+/* ============================================
+   INTERNSHIP SECTION — RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 767px) {
+  .internship-section {
+    padding: 60px 0 !important;
+  }
+
+  .internship-inner {
+    padding: 0 16px !important;
+  }
+
+  .internship-grid {
+    grid-template-columns: 1fr !important;
+    gap: 48px !important;
+  }
+
+  .internship-milestone-card {
+    padding: 20px 16px !important;
+  }
+
+  .internship-timeline {
+    padding-left: 0 !important;
   }
 }

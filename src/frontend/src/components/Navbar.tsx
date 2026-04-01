@@ -14,16 +14,28 @@ function scrollTo(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  onEnrol?: () => void;
+  onHome?: () => void;
+}
+
+export default function Navbar({ onEnrol, onHome }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handler, { passive: true });
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  const handleEnrol = () => {
+    if (onEnrol) {
+      onEnrol();
+    } else {
+      scrollTo("contact");
+    }
+  };
 
   return (
     <>
@@ -54,7 +66,13 @@ export default function Navbar() {
           {/* LEFT: Logo */}
           <button
             type="button"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => {
+              if (onHome) {
+                onHome();
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
             aria-label="Edu Mentoria Home"
             style={{
               background: "none",
@@ -63,40 +81,30 @@ export default function Navbar() {
               cursor: "pointer",
             }}
           >
-            {!logoError ? (
+            <div
+              style={{
+                background: "white",
+                borderRadius: 4,
+                padding: "3px 6px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 44,
+                boxSizing: "border-box",
+                overflow: "hidden",
+              }}
+            >
               <img
-                src="/assets/uploads/edu_mentoria_logo-019d32d2-c508-74be-b0a0-80f228ef99a2-2.png"
+                src="/assets/edumentoria-logo-white-019d47e8-b158-7013-bbc0-e3feb097a213.png"
                 alt="Edu Mentoria Logo"
-                height={52}
                 style={{
-                  height: 52,
+                  height: 36,
                   objectFit: "contain",
-                  mixBlendMode: "screen",
-                  background: "transparent",
+                  display: "block",
                 }}
-                onError={() => setLogoError(true)}
                 loading="lazy"
               />
-            ) : (
-              <div
-                style={{
-                  height: 52,
-                  width: 80,
-                  background: "#C8DC00",
-                  borderRadius: 6,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 800,
-                  fontSize: 16,
-                  color: "#0d1945",
-                  letterSpacing: 1,
-                }}
-              >
-                EM
-              </div>
-            )}
+            </div>
           </button>
 
           {/* CENTER: Nav links desktop */}
@@ -113,7 +121,7 @@ export default function Navbar() {
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <motion.button
               type="button"
-              onClick={() => scrollTo("contact")}
+              onClick={handleEnrol}
               whileHover={{
                 scale: 1.04,
                 boxShadow: "0 0 0 4px rgba(200,220,0,0.25)",
@@ -215,7 +223,7 @@ export default function Navbar() {
               type="button"
               onClick={() => {
                 setMobileOpen(false);
-                scrollTo("contact");
+                handleEnrol();
               }}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

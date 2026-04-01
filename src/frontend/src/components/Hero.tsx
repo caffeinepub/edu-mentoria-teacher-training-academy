@@ -66,6 +66,7 @@ function StatItem({
   return (
     <div ref={ref} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <span
+        className="hero-stat-num"
         style={{
           fontSize: 48,
           fontWeight: 900,
@@ -150,6 +151,7 @@ export default function Hero() {
 
       {/* Main content */}
       <div
+        className="hero-main-content"
         style={{
           flex: 1,
           maxWidth: 1280,
@@ -165,7 +167,10 @@ export default function Hero() {
         }}
       >
         {/* LEFT COLUMN */}
-        <div style={{ flex: "0 0 55%", maxWidth: "55%" }}>
+        <div
+          className="hero-left-col"
+          style={{ flex: "0 0 55%", maxWidth: "55%" }}
+        >
           {/* Overline */}
           <div
             style={{
@@ -236,7 +241,6 @@ export default function Hero() {
                   fontFamily: "Playfair Display, serif",
                   fontStyle: "italic",
                   lineHeight: 1.1,
-                  textShadow: "0 0 60px rgba(200,220,0,0.30)",
                 }}
               >
                 Education.
@@ -321,6 +325,7 @@ export default function Hero() {
 
           {/* Stats strip */}
           <motion.div
+            className="hero-stats"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.8 }}
@@ -513,53 +518,6 @@ export default function Hero() {
               >
                 30 Days at Phonic Champs
               </div>
-            </div>
-          </motion.div>
-
-          {/* Chip 3: middle-right */}
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{
-              duration: 3.5,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
-              delay: 1.6,
-            }}
-            style={{
-              position: "absolute",
-              top: "45%",
-              right: "-12%",
-              background: "#C8DC00",
-              borderRadius: 14,
-              padding: "12px 16px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              willChange: "transform",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 32,
-                fontWeight: 900,
-                color: "#0d1945",
-                lineHeight: 1,
-                fontFamily: "Montserrat, sans-serif",
-              }}
-            >
-              30
-            </div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "#0d1945",
-                fontFamily: "Montserrat, sans-serif",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-              }}
-            >
-              Days
             </div>
           </motion.div>
         </div>

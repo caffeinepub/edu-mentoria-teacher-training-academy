@@ -58,25 +58,8 @@ export default function Courses() {
         padding: "100px 0",
       }}
     >
-      {/* Ghost number */}
       <div
-        style={{
-          position: "absolute",
-          top: -40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(200,220,0,0.04)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        02
-      </div>
-
-      <div
+        className="courses-inner"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -95,9 +78,9 @@ export default function Courses() {
         >
           <div
             style={{
-              fontSize: 9,
+              fontSize: 14,
               fontWeight: 700,
-              letterSpacing: "3px",
+              letterSpacing: "2px",
               textTransform: "uppercase",
               color: "#00BBCC",
               marginBottom: 16,
@@ -141,16 +124,17 @@ export default function Courses() {
 
         {/* Course cards */}
         <div
+          className="courses-cards-wrap"
           style={{
             display: "flex",
             flexDirection: "column",
             gap: 24,
-            maxWidth: 900,
           }}
         >
           {courses.map((course, idx) => (
             <motion.div
               key={course.num}
+              className="course-card"
               initial={{ opacity: 0, y: 80 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -171,12 +155,13 @@ export default function Courses() {
               }}
               data-ocid={`courses.item.${idx + 1}`}
             >
-              {/* Left panel */}
+              {/* Left panel — number only */}
               <motion.div
+                className="course-card-panel"
                 whileHover={{ x: -8 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 style={{
-                  width: 180,
+                  width: 140,
                   flexShrink: 0,
                   background: course.panelBg,
                   display: "flex",
@@ -188,6 +173,7 @@ export default function Courses() {
                 }}
               >
                 <span
+                  className="course-card-num"
                   style={{
                     fontSize: 80,
                     fontWeight: 900,
@@ -198,24 +184,11 @@ export default function Courses() {
                 >
                   {course.num}
                 </span>
-                <span
-                  style={{
-                    background: course.chipBg,
-                    color: "white",
-                    borderRadius: 999,
-                    padding: "4px 12px",
-                    fontSize: 10,
-                    fontWeight: 600,
-                    fontFamily: "Montserrat, sans-serif",
-                    letterSpacing: "1px",
-                  }}
-                >
-                  {course.duration}
-                </span>
               </motion.div>
 
               {/* Right panel */}
               <div
+                className="course-card-body"
                 style={{
                   flex: 1,
                   background: "white",
@@ -225,7 +198,15 @@ export default function Courses() {
                   gap: 16,
                 }}
               >
-                <div>
+                {/* Category + Duration pills in one row */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    flexWrap: "wrap",
+                  }}
+                >
                   <span
                     style={{
                       background: "#C8DC00",
@@ -240,6 +221,21 @@ export default function Courses() {
                     }}
                   >
                     {course.category}
+                  </span>
+                  <span
+                    style={{
+                      background: course.panelBg,
+                      color: "white",
+                      borderRadius: 999,
+                      padding: "3px 10px",
+                      fontSize: 9,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "1px",
+                      fontFamily: "Montserrat, sans-serif",
+                    }}
+                  >
+                    {course.duration}
                   </span>
                 </div>
                 <h3
@@ -267,6 +263,7 @@ export default function Courses() {
                   </span>
                 </div>
                 <div
+                  className="course-curriculum-grid"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(2, 1fr)",
@@ -406,7 +403,7 @@ export default function Courses() {
                     width: 5,
                     height: 5,
                     borderRadius: "50%",
-                    background: "#C8DC00",
+                    background: "rgba(200,220,0,0.50)",
                     display: "inline-block",
                   }}
                 />

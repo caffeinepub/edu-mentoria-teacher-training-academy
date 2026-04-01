@@ -25,25 +25,8 @@ export default function Contact() {
         <polygon points="0,0 1440,0 1440,80 0,20" fill="#F2F5FF" />
       </svg>
 
-      {/* Ghost number */}
       <div
-        style={{
-          position: "absolute",
-          top: 40,
-          right: -20,
-          fontSize: 220,
-          fontWeight: 900,
-          color: "rgba(200,220,0,0.03)",
-          pointerEvents: "none",
-          lineHeight: 1,
-          fontFamily: "Montserrat, sans-serif",
-          userSelect: "none",
-        }}
-      >
-        06
-      </div>
-
-      <div
+        className="contact-outer"
         style={{
           maxWidth: 1280,
           margin: "0 auto",
@@ -70,7 +53,7 @@ export default function Contact() {
           >
             <div
               style={{
-                fontSize: 9,
+                fontSize: 11,
                 fontWeight: 700,
                 letterSpacing: "3px",
                 textTransform: "uppercase",
@@ -270,6 +253,7 @@ export default function Contact() {
           >
             {/* CTA Card */}
             <div
+              className="contact-cta-card"
               style={{
                 background: "#C8DC00",
                 borderRadius: 32,
@@ -310,6 +294,7 @@ export default function Contact() {
                   READY TO BEGIN?
                 </div>
                 <h3
+                  className="contact-cta-title"
                   style={{
                     margin: "0 0 16px",
                     fontSize: 36,
@@ -409,7 +394,6 @@ export default function Contact() {
                 style={{ borderRadius: 12, background: "#F2F5FF" }}
               >
                 <title>Map of Anna Nagar</title>
-                {/* Streets */}
                 <line
                   x1="0"
                   y1="45"
@@ -462,7 +446,6 @@ export default function Contact() {
                   strokeWidth={1.5}
                   opacity={0.5}
                 />
-                {/* Pin */}
                 <circle cx="200" cy="45" r="8" fill="#C8DC00" />
                 <circle cx="200" cy="45" r="4" fill="#0d1945" />
                 <text

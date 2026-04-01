@@ -1,4 +1,4 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -12,10 +12,26 @@ import Navbar from "./components/Navbar";
 import PageLoader from "./components/PageLoader";
 import Syllabus from "./components/Syllabus";
 import { useScrollProgress } from "./hooks/useScrollProgress";
+import EnrolPage from "./pages/EnrolPage";
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [page, setPage] = useState<"home" | "enrol">("home");
   const progress = useScrollProgress();
+
+  const goEnrol = () => {
+    setPage("enrol");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goHome = () => {
+    setPage("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  if (page === "enrol") {
+    return <EnrolPage onBack={goHome} />;
+  }
 
   return (
     <>
@@ -40,7 +56,7 @@ export default function App() {
             zIndex: 200,
           }}
         />
-        <Navbar />
+        <Navbar onEnrol={goEnrol} />
         <main>
           <Hero />
           <About />
