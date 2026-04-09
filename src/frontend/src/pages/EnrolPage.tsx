@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
-import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
@@ -7,6 +8,345 @@ interface EnrolPageProps {
   onBack: () => void;
 }
 
+// ──────────────────────────────────────────────────────────────
+// Custom accessible dropdown
+// ──────────────────────────────────────────────────────────────
+interface SelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+interface CustomSelectProps {
+  id?: string;
+  name: string;
+  value: string;
+  options: SelectOption[];
+  placeholder?: string;
+  hasError?: boolean;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  onChange: (value: string) => void;
+  style?: React.CSSProperties;
+}
+
+function CustomSelect({
+  id,
+  name,
+  value,
+  options,
+  placeholder,
+  hasError = false,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  onChange,
+  style,
+}: CustomSelectProps) {
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const generatedId = useId();
+  const listboxId = `listbox-${id ?? generatedId}`;
+
+  const selectedOption = options.find((o) => o.value === value);
+  const displayLabel = selectedOption
+    ? selectedOption.label
+    : (placeholder ?? "Select an option");
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setActiveIndex(-1);
+  }, []);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    function handleOutside(e: MouseEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        close();
+      }
+    }
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [open, close]);
+
+  // Scroll active item into view
+  useEffect(() => {
+    if (open && activeIndex >= 0 && listRef.current) {
+      const items =
+        listRef.current.querySelectorAll<HTMLDivElement>("[data-option]");
+      items[activeIndex]?.scrollIntoView({ block: "nearest" });
+    }
+  }, [open, activeIndex]);
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    const enabledOptions = options.filter((o) => !o.disabled);
+    if (!open) {
+      if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+        e.preventDefault();
+        setOpen(true);
+        const idx = enabledOptions.findIndex((o) => o.value === value);
+        setActiveIndex(idx >= 0 ? idx : 0);
+      }
+      return;
+    }
+    if (e.key === "Escape") {
+      e.preventDefault();
+      close();
+      return;
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, enabledOptions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (activeIndex >= 0) {
+        onChange(enabledOptions[activeIndex].value);
+        close();
+      }
+    } else if (e.key === "Tab") {
+      close();
+    }
+  }
+
+  const triggerBorder = hasError
+    ? "1.5px solid #e94040"
+    : open
+      ? "1.5px solid #C8DC00"
+      : "1.5px solid rgba(0,187,204,0.20)";
+
+  const triggerBg = hasError
+    ? "rgba(233,64,64,0.10)"
+    : "rgba(255,255,255,0.06)";
+
+  // Compute active index into the full options list for aria-activedescendant
+  const enabledOptions = options.filter((o) => !o.disabled);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{ position: "relative", width: "100%", ...style }}
+      // Hidden native select for form submission compatibility
+    >
+      {/* Hidden native input to carry the value in form data */}
+      <input type="hidden" name={name} value={value} />
+
+      {/* Trigger — button (natively keyboard-focusable) */}
+      <button
+        id={id}
+        type="button"
+        aria-expanded={open}
+        aria-controls={listboxId}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        onClick={() => {
+          if (open) {
+            close();
+          } else {
+            setOpen(true);
+            const idx = enabledOptions.findIndex((o) => o.value === value);
+            setActiveIndex(idx >= 0 ? idx : -1);
+          }
+        }}
+        onKeyDown={handleKeyDown}
+        style={{
+          width: "100%",
+          background: triggerBg,
+          border: triggerBorder,
+          borderRadius: 10,
+          padding: "13px 40px 13px 16px",
+          fontFamily: "Montserrat, sans-serif",
+          fontSize: 14,
+          fontWeight: 400,
+          color: selectedOption ? "#fff" : "rgba(255,255,255,0.35)",
+          outline: "none",
+          boxSizing: "border-box",
+          textAlign: "left",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "relative",
+          transition: "border-color 0.2s",
+        }}
+      >
+        <span
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
+          {displayLabel}
+        </span>
+        <span
+          style={{
+            position: "absolute",
+            right: 14,
+            top: "50%",
+            transform: `translateY(-50%) rotate(${open ? 180 : 0}deg)`,
+            transition: "transform 0.22s ease",
+            display: "flex",
+            alignItems: "center",
+            color: open ? "#C8DC00" : "rgba(255,255,255,0.55)",
+            pointerEvents: "none",
+          }}
+        >
+          <ChevronDown size={16} strokeWidth={2.5} />
+        </span>
+      </button>
+
+      {/* Dropdown panel */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            ref={listRef}
+            id={listboxId}
+            aria-label={ariaLabel}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: "absolute",
+              top: "calc(100% + 6px)",
+              left: 0,
+              right: 0,
+              zIndex: 100,
+              background: "#0a1235",
+              border: "1.5px solid rgba(0,187,204,0.30)",
+              borderRadius: 12,
+              padding: "6px 0",
+              margin: 0,
+              boxShadow: "0 12px 40px rgba(0,0,0,0.40)",
+              maxHeight: 260,
+              overflowY: "auto",
+            }}
+          >
+            {enabledOptions.map((opt, idx) => {
+              const isSelected = opt.value === value;
+              const isActive = idx === activeIndex;
+              return (
+                <div
+                  key={opt.value}
+                  id={`${listboxId}-opt-${idx}`}
+                  data-option="true"
+                  aria-selected={isSelected}
+                  onMouseEnter={() => setActiveIndex(idx)}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    onChange(opt.value);
+                    close();
+                  }}
+                  style={{
+                    padding: "11px 18px",
+                    fontSize: 14,
+                    fontFamily: "Montserrat, sans-serif",
+                    fontWeight: isSelected ? 700 : 400,
+                    color: isSelected ? "#C8DC00" : "#fff",
+                    background: isActive
+                      ? "rgba(0,187,204,0.10)"
+                      : "transparent",
+                    borderLeft: isActive
+                      ? "3px solid #00BBCC"
+                      : "3px solid transparent",
+                    cursor: "pointer",
+                    transition: "background 0.12s, border-color 0.12s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <span
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {opt.label}
+                  </span>
+                  {isSelected && (
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                      aria-hidden="true"
+                      style={{ flexShrink: 0, marginLeft: 8 }}
+                    >
+                      <path
+                        d="M2 7l3.5 3.5L12 3.5"
+                        stroke="#C8DC00"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────
+// Option lists
+// ──────────────────────────────────────────────────────────────
+const COUNTRY_CODES: SelectOption[] = [
+  { value: "+91", label: "+91 (India)" },
+  { value: "+1", label: "+1 (USA)" },
+  { value: "+44", label: "+44 (UK)" },
+  { value: "+61", label: "+61 (Australia)" },
+  { value: "+971", label: "+971 (UAE)" },
+  { value: "+65", label: "+65 (Singapore)" },
+  { value: "+60", label: "+60 (Malaysia)" },
+];
+
+const COURSE_OPTIONS: SelectOption[] = [
+  { value: "", label: "Select a programme", disabled: true },
+  {
+    value: "ecce-12",
+    label: "Early Childhood Care and Education (ECCE) - 12 Months",
+  },
+  { value: "montessori-12", label: "Montessori Teacher Training - 12 Months" },
+  {
+    value: "ecce-6",
+    label: "Early Childhood Care and Education (ECCE) - 6 Months",
+  },
+  { value: "montessori-6", label: "Montessori Teacher Training - 6 Months" },
+  { value: "not-sure", label: "Not Sure Yet / General Enquiry" },
+];
+
+const SOURCE_OPTIONS: SelectOption[] = [
+  { value: "", label: "Select an option", disabled: true },
+  { value: "google", label: "Google Search" },
+  { value: "social-media", label: "Social Media (Instagram/Facebook)" },
+  { value: "word-of-mouth", label: "Word of Mouth" },
+  { value: "school-referral", label: "School/College Referral" },
+  { value: "advertisement", label: "Advertisement" },
+  { value: "other", label: "Other" },
+];
+
+// ──────────────────────────────────────────────────────────────
+// Main page
+// ──────────────────────────────────────────────────────────────
 export default function EnrolPage({ onBack }: EnrolPageProps) {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
@@ -21,11 +361,19 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name])
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+  };
+
+  const handleSelectChange = (name: string) => (value: string) => {
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name])
       setErrors((prev) => {
@@ -591,24 +939,16 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
                         error={errors.phone}
                       >
                         <div style={{ display: "flex", gap: 10 }}>
-                          <select
-                            name="countryCode"
-                            value={form.countryCode}
-                            onChange={handleChange}
-                            aria-label="Country code"
-                            style={{
-                              ...fieldStyle(false),
-                              width: 90,
-                              flexShrink: 0,
-                              paddingRight: 8,
-                            }}
-                          >
-                            <option value="+91">+91</option>
-                            <option value="+1">+1</option>
-                            <option value="+44">+44</option>
-                            <option value="+61">+61</option>
-                            <option value="+971">+971</option>
-                          </select>
+                          <div style={{ flexShrink: 0, width: 110 }}>
+                            <CustomSelect
+                              name="countryCode"
+                              value={form.countryCode}
+                              options={COUNTRY_CODES}
+                              aria-label="Country code"
+                              onChange={handleSelectChange("countryCode")}
+                              style={{ width: 110 }}
+                            />
+                          </div>
                           <input
                             id="phone"
                             type="tel"
@@ -646,55 +986,32 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
                       required
                       error={errors.course}
                     >
-                      <select
+                      <CustomSelect
                         id="course"
                         name="course"
                         value={form.course}
-                        onChange={handleChange}
-                        style={fieldStyle(!!errors.course)}
-                      >
-                        <option value="" disabled>
-                          Select a programme
-                        </option>
-                        <optgroup label="Diploma Programmes">
-                          <option value="ecce-12">
-                            Diploma in Early Childhood Care and Education (12
-                            Months)
-                          </option>
-                          <option value="montessori-6">
-                            Diploma in Montessori and Child Education (6 Months)
-                          </option>
-                        </optgroup>
-                        <optgroup label="Add-On Modules">
-                          <option value="jolly-grammar">Jolly Grammar</option>
-                          <option value="sketch-noting">Sketch Noting</option>
-                        </optgroup>
-                        <option value="not-sure">
-                          Not Sure Yet / General Enquiry
-                        </option>
-                      </select>
+                        options={COURSE_OPTIONS.filter(
+                          (o) => !o.disabled || o.value === "",
+                        )}
+                        placeholder="Select a programme"
+                        hasError={!!errors.course}
+                        aria-labelledby="course-label"
+                        onChange={handleSelectChange("course")}
+                      />
                     </Field>
 
                     <Field id="source" label="How Did You Hear About Us?">
-                      <select
+                      <CustomSelect
                         id="source"
                         name="source"
                         value={form.source}
-                        onChange={handleChange}
-                        style={fieldStyle(false)}
-                      >
-                        <option value="" disabled>
-                          Select an option
-                        </option>
-                        <option value="social-media">Social Media</option>
-                        <option value="friend">
-                          Friend or Family Referral
-                        </option>
-                        <option value="google">Google Search</option>
-                        <option value="school">Through a School</option>
-                        <option value="phonic-champs">Phonic Champs</option>
-                        <option value="other">Other</option>
-                      </select>
+                        options={SOURCE_OPTIONS.filter(
+                          (o) => !o.disabled || o.value === "",
+                        )}
+                        placeholder="Select an option"
+                        aria-labelledby="source-label"
+                        onChange={handleSelectChange("source")}
+                      />
                     </Field>
 
                     <Field
@@ -885,11 +1202,7 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
                   delay: 0.2,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                style={{
-                  background: "#C8DC00",
-                  borderRadius: 28,
-                  padding: 36,
-                }}
+                style={{ background: "#C8DC00", borderRadius: 28, padding: 36 }}
               >
                 <h3
                   style={{
@@ -949,8 +1262,6 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
         }
         .enrol-form-card input::placeholder,
         .enrol-form-card textarea::placeholder { color: rgba(255,255,255,0.35); }
-        .enrol-form-card select { color: #fff; }
-        .enrol-form-card select option { background: #0d1945; color: #fff; }
       `}</style>
 
       <Footer />
@@ -958,6 +1269,9 @@ export default function EnrolPage({ onBack }: EnrolPageProps) {
   );
 }
 
+// ──────────────────────────────────────────────────────────────
+// Shared helpers
+// ──────────────────────────────────────────────────────────────
 function Field({
   id,
   label,
@@ -981,6 +1295,7 @@ function Field({
       }}
     >
       <label
+        id={`${id}-label`}
         htmlFor={id}
         style={{
           fontSize: 12,

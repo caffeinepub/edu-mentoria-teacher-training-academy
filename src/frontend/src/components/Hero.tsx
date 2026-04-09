@@ -101,7 +101,7 @@ export default function Hero() {
       id="hero"
       style={{
         minHeight: "100vh",
-        background: "#0d1945",
+        background: "#233aaa",
         position: "relative",
         overflow: "hidden",
         display: "flex",
